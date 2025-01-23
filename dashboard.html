@@ -86,6 +86,19 @@
             padding: 10px;
             font-family: monospace;
         }
+        #vnc-container {
+            margin-top: 20px;
+            width: 80%;
+            height: 400px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #000;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -100,6 +113,13 @@
             <p><span id="companyName"></span></p>
         </div>
     </div>
+
+    <!-- VNC container -->
+    <div id="vnc-container">
+        <iframe src="http://100.66.155.119:6080/vnc.html?autoconnect=true&resize=remote" title="VM Screen"></iframe>
+    </div>
+
+    <!-- Cloud Services Section -->
     <div id="services-list" style="display:none;">
         <h2>Cloud Computing Services</h2>
         <button class="button" id="compute-instances">Launch Compute Instances</button>
@@ -109,19 +129,10 @@
         <button class="button" id="machine-learning">Machine Learning</button>
         <button class="button" id="security-services">Security Services</button>
     </div>
-    <div id="compute-results" style="display:none;">
-        <h2>Compute Task Results</h2>
-        <p id="compute-output"></p>
-    </div>
-    <textarea id="editor" placeholder="Write your code here..."></textarea>
-    <button class="button" id="run-code">Run Code</button>
-    <div id="code-output" style="display:none;">
-        <h2>Code Output</h2>
-        <pre id="code-output-content"></pre>
-    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            fetch('http://<your-tailscale-ip>/info.txt')
+            fetch('http://100.66.155.119/info.txt')
                 .then(response => response.text())
                 .then(data => {
                     const lines = data.split('\n');
@@ -133,64 +144,8 @@
                     });
                 })
                 .catch(error => console.error('Error fetching the info:', error));
-
-            document.getElementById('compute-instances').addEventListener('click', function() {
-                performTask('Launch Compute Instances');
-            });
-            document.getElementById('manage-storage').addEventListener('click', function() {
-                performTask('Manage Storage', 2048);
-            });
-            document.getElementById('networking-services').addEventListener('click', function() {
-                performTask('Networking Services');
-            });
-            document.getElementById('database-management').addEventListener('click', function() {
-                performTask('Database Management');
-            });
-            document.getElementById('machine-learning').addEventListener('click', function() {
-                performTask('Machine Learning');
-            });
-            document.getElementById('security-services').addEventListener('click', function() {
-                performTask('Security Services');
-            });
-
-            function performTask(task, limit = null) {
-                const payload = { task: task };
-                if (limit) {
-                    payload.limit = limit;
-                }
-                fetch('http://100.66.155.119', { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('compute-results').style.display = 'block';
-                    document.getElementById('compute-output').textContent = data.result;
-                })
-                .catch(error => console.error('Error performing computing task:', error));
-            }
-
-            document.querySelector('.button').addEventListener('click', function() {
-                const servicesList = document.getElementById('services-list');
-                servicesList.style.display = servicesList.style.display === 'none' ? 'block' : 'none';
-            });
-
-            document.getElementById('run-code').addEventListener('click', function() {
-                const code = document.getElementById('editor').value;
-                fetch('http://100.66.155.119/run-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code: code })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('code-output').style.display = 'block';
-                    document.getElementById('code-output-content').textContent = data.output;
-                })
-                .catch(error => console.error('Error running code:', error));
-            });
         });
     </script>
 </body>
 </html>
+
