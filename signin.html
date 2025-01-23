@@ -32,23 +32,39 @@
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .input {
-      border: none;
-      padding: 1rem;
-      border-radius: 1rem;
-      background: #e8e8e8;
-      box-shadow: 20px 20px 60px #c5c5c5,
-        -20px -20px 60px #ffffff;
-      transition: 0.3s;
-    }
+    /* From Uiverse.io by tiagoadag1203 */ 
+.input {
+  max-width: 190px;
+  background-color: #1a1a1a;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  outline: none;
+  color: white;
+}
 
-    .input:focus {
-      outline-color: #e8e8e8;
-      background: #e8e8e8;
-      box-shadow: inset 20px 20px 60px #c5c5c5,
-        inset -20px -20px 60px #ffffff;
-      transition: 0.3s;
-    }
+.input:focus {
+  animation: rotateShadow 2s infinite linear;
+}
+
+@keyframes rotateShadow {
+  0% {
+    box-shadow: -2px -2px 0px 0px #aa00ff, 2px 2px 0px 0px #3700ff;
+  }
+  25% {
+    box-shadow: -2px 2px 0px 0px #aa00ff, 2px -2px 0px 0px #3700ff;
+  }
+  50% {
+    box-shadow: 2px 2px 0px 0px #aa00ff, -2px -2px 0px 0px #3700ff;
+  }
+  75% {
+    box-shadow: 2px -2px 0px 0px #aa00ff, -2px 2px 0px 0px #3700ff;
+  }
+  100% {
+    box-shadow: -2px -2px 0px 0px #aa00ff, 2px 2px 0px 0px #3700ff;
+  }
+}
+
   </style>
 </head>
 <body>
