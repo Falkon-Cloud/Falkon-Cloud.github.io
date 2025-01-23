@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FACCs console</title>
+  <style>
+    h1, p {
+      font-family: system-ui;
+      font-weight: 400;
+    }
+
+    /* Simplified Button Styling */
+    .button {
+      cursor: pointer;
+      padding: 0.7em 1em;
+      border-radius: 0.5em;
+      font-size: 18px;
+      font-weight: bold;
+      background: hsla(240, 40%, 50%, 1);
+      color: white;
+      border: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .button:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .button:active {
+      transform: scale(1);
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* From Uiverse.io by ercnersoy */ 
+    .input {
+      border: none;
+      padding: 1rem;
+      border-radius: 1rem;
+      background: #e8e8e8;
+      box-shadow: 20px 20px 60px #c5c5c5,
+        -20px -20px 60px #ffffff;
+      transition: 0.3s;
+    }
+
+    .input:focus {
+      outline-color: #e8e8e8;
+      background: #e8e8e8;
+      box-shadow: inset 20px 20px 60px #c5c5c5,
+        inset -20px -20px 60px #ffffff;
+      transition: 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <h1>FACCs (Falkon Accessible Cloud Consoles)</h1>
+  <p>Welcome!</p>
+  <input type="text" name="account-id" class="input" placeholder="Account ID" required>
+  <input type="text" name="email" class="input" placeholder="Email" required>
+  <input type="text" name="company-name" class="input" placeholder="Company name (optional)">
+  <button class="button" onclick="downloadInfo()">Download info</button>
+
+  <script>
+    function downloadInfo() {
+      var accountId = document.querySelector('input[name="account-id"]').value;
+      var email = document.querySelector('input[name="email"]').value;
+      var companyName = document.querySelector('input[name="company-name"]').value;
+
+      var content = `Account ID: ${accountId}\nEmail: ${email}\nCompany Name: ${companyName || 'N/A'}`;
+      var blob = new Blob([content], { type: 'text/plain' });
+      var url = URL.createObjectURL(blob);
+
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'info.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
