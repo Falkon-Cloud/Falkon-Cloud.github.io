@@ -74,8 +74,12 @@
             font-family: system-ui;
             font-weight: 400;
         }
-        #services-list, #compute-results {
+        #services-list, #interactive-services {
             margin-top: 20px;
+        }
+        #interactive-services button {
+            display: block;
+            margin: 10px auto;
         }
         #editor {
             width: 100%;
@@ -115,12 +119,12 @@
     </div>
 
     <!-- VNC container -->
-    <div id="vnc-container">
-        <iframe src="http://100.66.155.119:6080/vnc.html?autoconnect=true&resize=remote" title="VM Screen"></iframe>
+    <div id="vnc-container" style="display:none;">
+        <iframe src="http://<noVNC-server-ip>:6080/vnc.html?autoconnect=true&resize=remote" title="VM Screen"></iframe>
     </div>
 
     <!-- Cloud Services Section -->
-    <div id="services-list" style="display:none;">
+    <div id="services-list">
         <h2>Cloud Computing Services</h2>
         <button class="button" id="compute-instances">Launch Compute Instances</button>
         <button class="button" id="manage-storage">Manage Storage (Max: 2048 GB)</button>
@@ -128,6 +132,26 @@
         <button class="button" id="database-management">Database Management</button>
         <button class="button" id="machine-learning">Machine Learning</button>
         <button class="button" id="security-services">Security Services</button>
+    </div>
+
+    <!-- Interactive Services Section (VMs, IDE, etc.) -->
+    <div id="interactive-services">
+        <h2>Interactive Services</h2>
+        <button class="button" id="launch-vm">Launch Virtual Machine</button>
+        <button class="button" id="open-ide">Open IDE</button>
+
+        <!-- VM ISO selection -->
+        <div id="vm-iso-selection" style="display:none;">
+            <h3>Select an ISO to launch the VM:</h3>
+            <input type="file" id="iso-file" accept=".iso">
+            <button class="button" id="launch-vm-from-iso">Launch VM from ISO</button>
+        </div>
+    </div>
+
+    <!-- Editor Section -->
+    <div id="editor" style="display:none;">
+        <h3>Code Editor</h3>
+        <textarea placeholder="Write your code here..."></textarea>
     </div>
 
     <script>
@@ -144,8 +168,43 @@
                     });
                 })
                 .catch(error => console.error('Error fetching the info:', error));
+
+            // Toggle interactive services display
+            document.getElementById('launch-vm').addEventListener('click', function() {
+                document.getElementById('vm-iso-selection').style.display = 'block';
+                document.getElementById('vnc-container').style.display = 'none';
+                document.getElementById('editor').style.display = 'none';
+            });
+
+            document.getElementById('open-ide').addEventListener('click', function() {
+                document.getElementById('editor').style.display = 'block';
+                document.getElementById('vnc-container').style.display = 'none';
+                document.getElementById('vm-iso-selection').style.display = 'none';
+            });
+
+            // Launch VM from ISO
+            document.getElementById('launch-vm-from-iso').addEventListener('click', function() {
+                const isoFile = document.getElementById('iso-file').files[0];
+                if (isoFile) {
+                    const formData = new FormData();
+                    formData.append('iso', isoFile);
+                    // POST the ISO to your server to launch a VM
+                    fetch('http://100.66.155.119/launch-vm', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('vnc-container').style.display = 'block';
+                        }
+                    })
+                    .catch(error => console.error('Error launching VM:', error));
+                } else {
+                    alert('Please select an ISO file first.');
+                }
+            });
         });
     </script>
 </body>
 </html>
-
