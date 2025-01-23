@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
-        .button {
+                .button {
             position: relative;
             overflow: hidden;
             height: 3rem;
@@ -103,107 +103,147 @@
             height: 100%;
             border: none;
         }
+        #file-management, #backup-management {
+            margin-top: 20px;
+        }
+
+        .file-button, .backup-button {
+            display: block;
+            margin: 10px auto;
+        }
+
+        .file-management-container, .backup-management-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .file-management-container h3, .backup-management-container h3 {
+            text-align: center;
+        }
+
+        #file-upload {
+            display: block;
+            margin: 10px 0;
+        }
+
+        #file-list {
+            margin-top: 10px;
+        }
+
+        .file-item {
+            margin: 5px 0;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <h1>Welcome to the dashboard!</h1>
-    <div class="account-container">
-        <div class="account-header">
-            <h1>Account Information</h1>
-        </div>
-        <div class="account-details">
-            <p><span id="accountID"></span></p>
-            <p><span id="email"></span></p>
-            <p><span id="companyName"></span></p>
-        </div>
-    </div>
-
-    <!-- VNC container -->
-    <div id="vnc-container" style="display:none;">
-        <iframe src="http://localhost:6080/vnc.html?autoconnect=true&resize=remote" title="VM Screen"></iframe>
-    </div>
-
-    <!-- Cloud Services Section -->
-    <div id="services-list">
-        <h2>Cloud Computing Services</h2>
-        <button class="button" id="compute-instances">Launch Compute Instances</button>
-        <button class="button" id="manage-storage">Manage Storage (Max: 2048 GB)</button>
-        <button class="button" id="networking-services">Networking Services</button>
-        <button class="button" id="database-management">Database Management</button>
-        <button class="button" id="machine-learning">Machine Learning</button>
-        <button class="button" id="security-services">Security Services</button>
-    </div>
-
-    <!-- Interactive Services Section (VMs, IDE, etc.) -->
-    <div id="interactive-services">
-        <h2>Interactive Services</h2>
-        <button class="button" id="launch-vm">Launch Virtual Machine</button>
-        <button class="button" id="open-ide">Open IDE</button>
-
-        <!-- VM ISO selection -->
-        <div id="vm-iso-selection" style="display:none;">
-            <h3>Select an ISO to launch the VM:</h3>
-            <input type="file" id="iso-file" accept=".iso">
-            <button class="button" id="launch-vm-from-iso">Launch VM from ISO</button>
+    
+    <!-- File Management Section -->
+    <div id="file-management">
+        <h2>File Management</h2>
+        <div class="file-management-container">
+            <h3>Upload a File</h3>
+            <input type="file" id="file-upload" />
+            <button class="button file-button" id="upload-file">Upload File</button>
+            
+            <h3>Manage Files</h3>
+            <div id="file-list">
+                <!-- Dynamic file list will appear here -->
+            </div>
         </div>
     </div>
 
-    <!-- Editor Section -->
-    <div id="editor" style="display:none;">
-        <h3>Code Editor</h3>
-        <textarea placeholder="Write your code here..."></textarea>
+    <!-- Backup Management Section -->
+    <div id="backup-management">
+        <h2>Backup Management</h2>
+        <div class="backup-management-container">
+            <button class="button backup-button" id="backup-files">Create Backup</button>
+            <button class="button backup-button" id="restore-backup">Restore Backup</button>
+        </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            fetch('http://100.66.155.119/info.txt')
-                .then(response => response.text())
-                .then(data => {
-                    const lines = data.split('\n');
-                    lines.forEach(line => {
-                        const [key, value] = line.split(': ');
-                        if (key && value) {
-                            document.getElementById(key).textContent = `${key}: ${value}`;
-                        }
-                    });
-                })
-                .catch(error => console.error('Error fetching the info:', error));
-
-            // Toggle interactive services display
-            document.getElementById('launch-vm').addEventListener('click', function() {
-                document.getElementById('vm-iso-selection').style.display = 'block';
-                document.getElementById('vnc-container').style.display = 'none';
-                document.getElementById('editor').style.display = 'none';
-            });
-
-            document.getElementById('open-ide').addEventListener('click', function() {
-                document.getElementById('editor').style.display = 'block';
-                document.getElementById('vnc-container').style.display = 'none';
-                document.getElementById('vm-iso-selection').style.display = 'none';
-            });
-
-            // Launch VM from ISO
-            document.getElementById('launch-vm-from-iso').addEventListener('click', function() {
-                const isoFile = document.getElementById('iso-file').files[0];
-                if (isoFile) {
+            // File Management
+            document.getElementById('upload-file').addEventListener('click', function() {
+                const fileInput = document.getElementById('file-upload');
+                const file = fileInput.files[0];
+                if (file) {
                     const formData = new FormData();
-                    formData.append('iso', isoFile);
-                    // POST the ISO to your server to launch a VM
-                    fetch('http://100.66.155.119/launch-vm', {
+                    formData.append('file', file);
+                    // POST the file to your server for storage
+                    fetch('http://100.66.155.119/upload-file', {
                         method: 'POST',
                         body: formData
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            document.getElementById('vnc-container').style.display = 'block';
+                            alert('File uploaded successfully!');
+                            listFiles(); // Refresh the file list
+                        } else {
+                            alert('Error uploading file');
                         }
                     })
-                    .catch(error => console.error('Error launching VM:', error));
+                    .catch(error => console.error('Error uploading file:', error));
                 } else {
-                    alert('Please select an ISO file first.');
+                    alert('Please select a file to upload');
                 }
             });
+
+            // List Files
+            function listFiles() {
+                fetch('http://100.66.155.119/list-files')
+                    .then(response => response.json())
+                    .then(data => {
+                        const fileList = document.getElementById('file-list');
+                        fileList.innerHTML = ''; // Clear previous list
+                        data.files.forEach(file => {
+                            const fileItem = document.createElement('div');
+                            fileItem.classList.add('file-item');
+                            fileItem.textContent = file;
+                            fileList.appendChild(fileItem);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching files:', error));
+            }
+
+            // Backup Management
+            document.getElementById('backup-files').addEventListener('click', function() {
+                fetch('http://100.66.155.119/create-backup', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Backup created successfully!');
+                    } else {
+                        alert('Error creating backup');
+                    }
+                })
+                .catch(error => console.error('Error creating backup:', error));
+            });
+
+            document.getElementById('restore-backup').addEventListener('click', function() {
+                fetch('http://100.66.155.119/restore-backup', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Backup restored successfully!');
+                    } else {
+                        alert('Error restoring backup');
+                    }
+                })
+                .catch(error => console.error('Error restoring backup:', error));
+            });
+
+            // Initial file list load
+            listFiles();
         });
     </script>
 </body>
