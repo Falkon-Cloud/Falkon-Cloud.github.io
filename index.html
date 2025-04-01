@@ -1,44 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Styled Page</title>
-  <style>
-    h1, p {
-      font-family: system-ui;
-      font-weight: 400;
-    }
-
-    /* Simplified Button Styling */
-    .button {
-      cursor: pointer;
-      padding: 0.7em 1em;
-      border-radius: 0.5em;
-      font-size: 18px;
-      font-weight: bold;
-      background: hsla(240, 40%, 50%, 1);
-      color: white;
-      border: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .button:hover {
-      transform: scale(1.05);
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .button:active {
-      transform: scale(1);
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Discontinued</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .discontinued-screen {
+            text-align: center;
+        }
+        .discontinued-screen h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .discontinued-screen p {
+            font-size: 1.5em;
+        }
+    </style>
 </head>
 <body>
-  <h1>Falkon</h1>
-  <p>The bigger cloud, for free.</p>
-  <a href="signup.html">
-    <button class="button">Start now</button>
-  </a>
+    <div class="discontinued-screen">
+        <h1>Service Discontinued</h1>
+        <p>Thank you for using Falkon Cloud. This service is no longer available.</p>
+    </div>
 </body>
 </html>
